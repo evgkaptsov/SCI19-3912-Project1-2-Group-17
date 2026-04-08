@@ -20,6 +20,8 @@ class FAFactory:
         Sigma = data["Sigma"]
         F = data["F"]
         raw_delta = data["delta"]
+        
+        print(">>>>>>>> {Sigma}")
 
         # แปลง delta เป็น dict: (state, symbol) -> set(states)
         symbols = Sigma + ["eps"]

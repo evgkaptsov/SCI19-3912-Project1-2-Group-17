@@ -12,19 +12,22 @@ from pathlib import Path
 
 
 def main():
+    
+    fileName = "jsonNFA3"
     # your code here
     BASE_DIR = Path(__file__).resolve().parent
-    file_path = BASE_DIR / "data" / "NFA01.json"
+    file_path = BASE_DIR / "data" / f"{fileName}.json"
     
     nfa = FAFactory.from_file(file_path)
     print(nfa)
     
-    #file_path = BASE_DIR / "data" / "NFA01.graphml"
-    #nfa.save_to_dot(file_path)
     
     cvt = NFA2DFAConverter()
-    DFA = cvt.convertNFA2DFA(nfa)
-    print("Result: ", DFA)
+    dfa = cvt.convertNFA2DFA(nfa)
+    print("Result: ", dfa)
+    
+    file_path = BASE_DIR / "data" / f"{fileName}.dot"
+    dfa.save_to_dot(file_path)
     
     
     print("Done.")

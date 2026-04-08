@@ -1,0 +1,15 @@
+digraph DFA {
+    rankdir=LR;
+    node [shape = doublecircle]; stateA stateD ;
+    node [shape = circle];
+    start [shape=point];
+    start -> stateA;
+    stateA -> stateC [label="a"];
+    stateA -> stateD [label="b"];
+    stateD -> stateB [label="a"];
+    stateD -> stateB [label="b"];
+    stateB -> stateB [label="a"];
+    stateB -> stateB [label="b"];
+    stateC -> stateB [label="a"];
+    stateC -> stateD [label="b"];
+}
