@@ -6,6 +6,7 @@ Created on Wed Mar 18 18:05:29 2026
 """
 import json
 import string
+from graphviz import Source
 
 
 class DFA:
@@ -42,37 +43,41 @@ class DFA:
         # assign names: stateA, stateB, ...
         names = {}
         letters = list(string.ascii_uppercase)
-    
+
         for i, q in enumerate(self.Q):
             if i < len(letters):
                 names[q] = f"state{letters[i]}"
             else:
                 names[q] = f"state{i}"   # fallback if many states
-    
+
         with open(filename, "w", encoding="utf-8") as f:
             f.write("digraph DFA {\n")
             f.write("    rankdir=LR;\n")
-    
+
             # accepting states
             f.write("    node [shape = doublecircle]; ")
             for q in self.F:
                 f.write(f"{names[q]} ")
             f.write(";\n")
-    
+
             # normal states
             f.write("    node [shape = circle];\n")
-    
+
             # start arrow
             f.write("    start [shape=point];\n")
             f.write(f"    start -> {names[self.q0]};\n")
-    
+
             # transitions
             for (q, a), t in self.delta.items():
                 f.write(
                     f'    {names[q]} -> {names[t]} [label="{a}"];\n'
                 )
-    
+
             f.write("}\n")
+
+    def render_dot_to_png(self, dot_file, output_file="output", view=False):
+        src = Source.from_file(dot_file)
+        src.render(output_file, format="png", view=view)
 
 # for now we will use a code
 # stub (draft) for a finite automata
@@ -128,31 +133,31 @@ class NFA(DFA):
         with open(filename, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)
 
-    def save_to_dot(self, filename):
-        with open(filename, "w", encoding="utf-8") as f:
-            f.write("digraph NFA {\n")
-            f.write("    rankdir=LR;\n")
+    # def save_to_dot(self, filename):
+    #     with open(filename, "w", encoding="utf-8") as f:
+    #         f.write("digraph NFA {\n")
+    #         f.write("    rankdir=LR;\n")
 
-            # accepting states
-            f.write("    node [shape = doublecircle]; ")
-            for q in self.F:
-                f.write(f"{q} ")
-            f.write(";\n")
+    #         # accepting states
+    #         f.write("    node [shape = doublecircle]; ")
+    #         for q in self.F:
+    #             f.write(f"{q} ")
+    #         f.write(";\n")
 
-            # normal states
-            f.write("    node [shape = circle];\n")
+    #         # normal states
+    #         f.write("    node [shape = circle];\n")
 
-            # start arrow
-            f.write(f"    start [shape=point];\n")
-            f.write(f"    start -> {self.q0};\n")
+    #         # start arrow
+    #         f.write(f"    start [shape=point];\n")
+    #         f.write(f"    start -> {self.q0};\n")
 
-            # transitions
-            symbols = self.Sigma + ["eps"]
-            for q in self.Q:
-                for s in symbols:
-                    targets = self.delta.get((q, s), set())
-                    for t in targets:
-                        label = "ε" if s == "eps" else s
-                        f.write(f'    {q} -> {t} [label="{label}"];\n')
+    #         # transitions
+    #         symbols = self.Sigma + ["eps"]
+    #         for q in self.Q:
+    #             for s in symbols:
+    #                 targets = self.delta.get((q, s), set())
+    #                 for t in targets:
+    #                     label = "ε" if s == "eps" else s
+    #                     f.write(f'    {q} -> {t} [label="{label}"];\n')
 
-            f.write("}\n")
+    #         f.write("}\n")

@@ -13,7 +13,7 @@ from pathlib import Path
 
 def main():
     
-    fileName = "jsonNFA3"
+    fileName = "jsonNFA2"
     # your code here
     BASE_DIR = Path(__file__).resolve().parent
     file_path = BASE_DIR / "data" / f"{fileName}.json"
@@ -26,9 +26,13 @@ def main():
     dfa = cvt.convertNFA2DFA(nfa)
     print("Result: ", dfa)
     
-    file_path = BASE_DIR / "data" / f"{fileName}.dot"
-    dfa.save_to_dot(file_path)
+    dot_file_path = BASE_DIR / "data" / f"{fileName}.dot"
+    dfa.save_to_dot(dot_file_path)
     
+    png_file_path = BASE_DIR / "data" / f"{fileName}.png"
+    
+    
+    dfa.render_dot_to_png(dot_file_path, png_file_path, view=True)
     
     print("Done.")
 
