@@ -5,7 +5,7 @@ Created on Thu Apr  2 14:50:28 2026
 @author: CCS
 """
 
-from NFA import DFA
+from FA import DFA
 
 
 class NFA2DFAConverter:

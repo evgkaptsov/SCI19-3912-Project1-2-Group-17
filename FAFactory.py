@@ -6,7 +6,7 @@ Created on Wed Mar 25 17:35:13 2026
 """
 
 import json
-from NFA import NFA
+from FA import NFA
 
 
 class FAFactory:
@@ -21,7 +21,7 @@ class FAFactory:
         F = data["F"]
         raw_delta = data["delta"]
 
-        # แปลง delta เป็น dict: (state, symbol) -> set(states)
+        # convert delta to a dict: (state, symbol) -> set(states)
         symbols = Sigma + ["eps"]
         delta = {}
 

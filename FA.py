@@ -6,6 +6,7 @@ Created on Wed Mar 18 18:05:29 2026
 """
 import json
 
+
 class DFA:
     def __init__(self, Q, q0, Sigma, F, delta):
         self.Q = Q                  # list of states
@@ -13,11 +14,11 @@ class DFA:
         self.Sigma = Sigma          # alphabet
         self.F = F                  # accepting states
         self.delta = delta          # transition table
-        
+
     def __repr__(self):
         def fmt_state(s):
             return "{" + ", ".join(sorted(s)) + "}"
-    
+
         lines = []
         lines.append("DFA(")
         lines.append(f"  Q={{ {', '.join(fmt_state(s) for s in self.Q)} }},")
@@ -25,32 +26,72 @@ class DFA:
         lines.append(f"  Sigma={self.Sigma},")
         lines.append(f"  F={{ {', '.join(fmt_state(s) for s in self.F)} }},")
         lines.append("  delta={")
-    
+
         for (state, a), target in self.delta.items():
-            lines.append(f"    ({fmt_state(state)}, '{a}') -> {fmt_state(target)}")
-    
+            lines.append(f"    ({fmt_state(state)}, '{
+                         a}') -> {fmt_state(target)}")
+
         lines.append("  }")
         lines.append(")")
         return "\n".join(lines)
 
-# for now we will use a code 
+    def _fmt_state(self, s):
+        return "{" + ",".join(sorted(s)) + "}"
+
+    def _write_header(self, f, name="FA"):
+    f.write(f"digraph {name} {{\n")
+    f.write("    rankdir=LR;\n")
+
+    # accepting states
+    f.write("    node [shape = doublecircle]; ")
+    for q in self.F:
+        f.write(f"{self._fmt_state(q)} ")
+    f.write(";\n")
+
+    # normal states
+    f.write("    node [shape = circle];\n")
+
+    # start arrow
+    f.write("    start [shape=point];\n")
+    f.write(f"    start -> {self._fmt_state(self.q0)};\n")
+
+
+def _write_footer(self, f):
+    f.write("}\n")
+
+
+def save_to_dot(self, filename):
+    with open(filename, "w", encoding="utf-8") as f:
+        self._write_header(f, "DFA")
+
+        # DFA transitions (single target)
+        for (q, a), t in self.delta.items():
+            f.write(
+                f'    {self._fmt_state(q)} -> {self._fmt_state(t)} '
+                f'[label="{a}"];\n'
+            )
+
+        self._write_footer(f)
+
+# for now we will use a code
 # stub (draft) for a finite automata
 
+
 class NFA(DFA):
-    
+
     def find_all_paths(self, qq, a):
         result = set()
         for q in qq:
             result |= self.delta.get((q, a), set())
         return result
-    
+
     def epsilon_closure_of_set(self, qq):
         EE = set()
         for q in qq:
             E = self.epsilon_closure(q)
             EE |= E      # union
         return EE
-    
+
     def epsilon_closure(self, q):
         stack = [q]
         closure = {q}
@@ -62,7 +103,6 @@ class NFA(DFA):
                     stack.append(nxt)
         return closure
 
-    
     def save_to_file(self, filename):
         symbols = self.Sigma + ["eps"]
         raw_delta = []
@@ -85,30 +125,17 @@ class NFA(DFA):
 
     def save_to_dot(self, filename):
         with open(filename, "w", encoding="utf-8") as f:
-            f.write("digraph NFA {\n")
-            f.write("    rankdir=LR;\n")
-    
-            # accepting states
-            f.write("    node [shape = doublecircle]; ")
-            for q in self.F:
-                f.write(f"{q} ")
-            f.write(";\n")
-    
-            # normal states
-            f.write("    node [shape = circle];\n")
-    
-            # start arrow
-            f.write(f"    start [shape=point];\n")
-            f.write(f"    start -> {self.q0};\n")
-    
-            # transitions
-            symbols = self.Sigma + ["eps"]
-            for q in self.Q:
-                for s in symbols:
-                    targets = self.delta.get((q, s), set())
-                    for t in targets:
-                        label = "ε" if s == "eps" else s
-                        f.write(f'    {q} -> {t} [label="{label}"];\n')
-    
-            f.write("}\n")
+        self._write_header(f, "NFA")
 
+        symbols = self.Sigma + ["eps"]
+
+        for q in self.Q:
+            for s in symbols:
+                targets = self.delta.get((q, s), set())
+                for t in targets:
+                    label = "ε" if s == "eps" else s
+                    f.write(
+                        f'    {q} -> {t} [label="{label}"];\n'
+                    )
+
+        self._write_footer(f)
