@@ -30,8 +30,8 @@ def main():
     dot_file_path = BASE_DIR / "data" / f"{fileName}.dot"
     dfa.save_to_dot(dot_file_path)
     
-    png_file_path = BASE_DIR / "data" / f"{fileName}.png"
-    graplang_png_file_path = BASE_DIR / "data" / f"{fileName}_graplang.png"
+    png_file_path = BASE_DIR / "data" / f"{fileName}"
+    graplang_png_file_path = BASE_DIR / "data" / f"{fileName}_graplang"
     
     
     dfa.render_dot_to_png(dot_file_path, png_file_path, view=False)
