@@ -11,9 +11,7 @@ from pathlib import Path
 from GraphLangGen import GraphLanguageGenerator
 
 
-
-def main():
-    
+def NFA_test():
     fileName = "jsonNFA5"
     # your code here
     BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,6 +41,28 @@ def main():
     graphLangGen.renderGraphString(graphLang, input, BASE_DIR / "data" / f"{fileName}_{input}")
     
     
+def TwoNFA_test():
+    fileName = "json2NFA1"
+    # your code here
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    file_path = BASE_DIR / "data" / f"{fileName}.json"
+    
+    print("Loading", file_path)
+    
+    nfa2 = FAFactory.from_file_2way(file_path)
+    print(nfa2)
+    
+    dot_file_path = BASE_DIR / "data" / f"{fileName}.dot"
+    nfa2.save_to_dot(dot_file_path)
+    
+    png_file_path = BASE_DIR / "data" / f"{fileName}"
+    
+    nfa2.render_dot_to_png(dot_file_path, png_file_path, view=True)
+
+
+def main():
+    
+    TwoNFA_test()
     
     print("Done.")
 

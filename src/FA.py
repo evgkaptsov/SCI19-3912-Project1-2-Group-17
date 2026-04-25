@@ -135,3 +135,118 @@ class NFA(DFA):
         with open(filename, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)
 
+
+
+
+
+class TwoWayNFA(NFA):
+
+    def __init__(self, Q, q0, Sigma, F, delta):
+        """
+        delta[(q, a)] = set of (p, dir) where dir ∈ {"L", "R"}
+        """
+        super().__init__(Q, q0, Sigma, F, delta)
+        self.type = "TwoNFA"
+
+        # extend alphabet with markers
+        self.left_marker = "⊢"
+        self.right_marker = "⊣"
+        self.Sigma_ext = [self.left_marker] + Sigma + [self.right_marker]
+
+    # WARNING: this method wansn't tested properly!
+    def find_all_paths(self, qq, a):
+        """
+        Return set of (state, direction)
+        """
+        result = set()
+        for q in qq:
+            result |= self.delta.get((q, a), set())
+        return result
+
+    # WARNING: this method wansn't tested properly!
+    def move(self, qq, a, position, length):
+        """
+        Perform one 2-way move from a set of states.
+
+        position: current head position
+        length: length of input (including markers)
+
+        Returns:
+            set of (next_state, next_position)
+        """
+        result = set()
+
+        for q in qq:
+            for (p, d) in self.delta.get((q, a), set()):
+                if d == "R":
+                    new_pos = position + 1
+                elif d == "L":
+                    new_pos = position - 1
+                else:
+                    continue
+
+                # boundary check
+                if 0 <= new_pos < length:
+                    result.add((p, new_pos))
+
+        return result
+
+    def __repr__(self):
+        lines = []
+        lines.append("TwoNFA(")
+        lines.append(f"  Q={self.Q},")
+        lines.append(f"  q0={self.q0},")
+        lines.append(f"  Sigma={self.Sigma},")
+        lines.append(f"  Sigma_ext={self.Sigma_ext},")
+        lines.append(f"  F={self.F},")
+        lines.append("  delta={")
+
+        for (q, a), targets in self.delta.items():
+            for (p, d) in targets:
+                lines.append(f"    ({q}, '{a}') -> ({p}, {d})")
+
+        lines.append("  }")
+        lines.append(")")
+        return "\n".join(lines)
+    
+
+    def save_to_dot(self, filename):
+        # assign readable names
+        names = {}
+        letters = list(string.ascii_uppercase)
+    
+        for i, q in enumerate(self.Q):
+            if i < len(letters):
+                names[q] = f"state{letters[i]}"
+            else:
+                names[q] = f"state{i}"
+    
+        print("Saving to dot-file:", filename)
+    
+        with open(filename, "w", encoding="utf-8") as f:
+            f.write("digraph TwoNFA {\n")
+            f.write("    rankdir=LR;\n")
+    
+            # accepting states
+            f.write("    node [shape = doublecircle]; ")
+            for q in self.F:
+                f.write(f"{names[q]} ")
+            f.write(";\n")
+    
+            # normal states
+            f.write("    node [shape = circle];\n")
+    
+            # start arrow
+            f.write("    start [shape=point];\n")
+            f.write(f"    start -> {names[self.q0]};\n")
+    
+            # transitions
+            for (q, a), targets in self.delta.items():
+                for (p, d) in targets:
+                    label = f"{a},{d}"   # show symbol + direction
+                    f.write(
+                        f'    {names[q]} -> {names[p]} [label="{label}"];\n'
+                    )
+    
+            f.write("}\n")
+    

@@ -1,0 +1,18 @@
+digraph TwoNFA {
+    rankdir=LR;
+    node [shape = doublecircle]; stateB ;
+    node [shape = circle];
+    start [shape=point];
+    start -> stateA;
+    stateA -> stateA [label="⊢,R"];
+    stateA -> stateA [label="a,R"];
+    stateA -> stateB [label="a,R"];
+    stateA -> stateA [label="b,R"];
+    stateA -> stateA [label="⊣,L"];
+    stateB -> stateB [label="⊢,R"];
+    stateB -> stateB [label="a,L"];
+    stateB -> stateB [label="a,R"];
+    stateB -> stateB [label="b,L"];
+    stateB -> stateB [label="b,R"];
+    stateB -> stateB [label="⊣,L"];
+}
