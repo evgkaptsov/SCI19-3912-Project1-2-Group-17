@@ -1,4 +1,8 @@
-_Student Project "Project I/II", Group 17, Semesters 2568/2-3._
+**Student Project "Project I/II", Group 17, Semesters 2568/2-3.**
+
+**Copyright and usage notice:**
+© 2025–2026 Evgenii Kaptsov, Natthira Sannok, Suwannee Pitram, Waritsara Phromwichan. 
+Permission is granted to use, copy, modify, and distribute this code for educational and non-commercial purposes, provided that proper attribution is given to the author and a reference to this repository is included.
 
 **Disclaimer**
 
