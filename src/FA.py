@@ -6,6 +6,7 @@ Created on Wed Mar 18 18:05:29 2026
 """
 import json
 import string
+from collections import defaultdict
 from graphviz import Source
 
 
@@ -211,17 +212,33 @@ class TwoWayNFA(NFA):
     
 
     def save_to_dot(self, filename):
+        # marker replacement (Graphviz-safe)
+        symbol_map = {
+            "⊢": "|-",
+            "⊣": "-|"
+        }
+    
         # assign readable names
         names = {}
         letters = list(string.ascii_uppercase)
     
         for i, q in enumerate(self.Q):
             if i < len(letters):
-                names[q] = f"state{letters[i]}"
+                names[q] = f"{letters[i]}"
             else:
-                names[q] = f"state{i}"
+                names[q] = f"{i}"
     
         print("Saving to dot-file:", filename)
+    
+        # --- group transitions ---
+        grouped = defaultdict(list)
+    
+        for (q, a), targets in self.delta.items():
+            a_print = symbol_map.get(a, a)
+    
+            for (p, d) in targets:
+                label = f"{a_print},{d}"
+                grouped[(q, p)].append(label)
     
         with open(filename, "w", encoding="utf-8") as f:
             f.write("digraph TwoNFA {\n")
@@ -240,13 +257,15 @@ class TwoWayNFA(NFA):
             f.write("    start [shape=point];\n")
             f.write(f"    start -> {names[self.q0]};\n")
     
-            # transitions
-            for (q, a), targets in self.delta.items():
-                for (p, d) in targets:
-                    label = f"{a},{d}"   # show symbol + direction
-                    f.write(
-                        f'    {names[q]} -> {names[p]} [label="{label}"];\n'
-                    )
+            # --- merged transitions ---
+            for (q, p), labels in grouped.items():
+                labels = sorted(set(labels))   # remove duplicates + stable order
+    
+                # vertical layout (top → bottom)
+                label_str = "\\n".join(labels)
+    
+                f.write(
+                    f'    {names[q]} -> {names[p]} [label="{label_str}"];\n'
+                )
     
             f.write("}\n")
-    

@@ -8,7 +8,9 @@ Created on Wed Mar 18 17:55:39 2026
 from NFA_to_DFA_coverter import NFA2DFAConverter
 from FAFactory import FAFactory
 from pathlib import Path
-from GraphLangGen import GraphLanguageGenerator
+from GraphLangGen import NFAGraphLanguageGenerator
+from GraphLangGen import TwoNFAGraphLanguageGenerator
+
 
 
 def NFA_test():
@@ -33,7 +35,7 @@ def NFA_test():
     dfa.render_dot_to_png(dot_file_path, png_file_path, view=False)
     
     
-    graphLangGen = GraphLanguageGenerator(nfa)
+    graphLangGen = NFAGraphLanguageGenerator(nfa)
     graphLang = graphLangGen.generate_graphs()
     graphLangGen.renderGraphAlphabet(graphLang, BASE_DIR / "data", fileName)
     
@@ -57,7 +59,14 @@ def TwoNFA_test():
     
     png_file_path = BASE_DIR / "data" / f"{fileName}"
     
-    nfa2.render_dot_to_png(dot_file_path, png_file_path, view=True)
+    nfa2.render_dot_to_png(dot_file_path, png_file_path, view=False)
+    
+    graphLangGen = TwoNFAGraphLanguageGenerator(nfa2)
+    graphLang = graphLangGen.generate_graphs()
+    graphLangGen.renderGraphAlphabet(graphLang, BASE_DIR / "data", fileName)
+    
+    input = "abbbabb"
+    graphLangGen.renderGraphString(graphLang, input, BASE_DIR / "data" / f"{fileName}_{input}")
 
 
 def main():
