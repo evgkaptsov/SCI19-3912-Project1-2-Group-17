@@ -39,7 +39,7 @@ def main():
     graphLang = graphLangGen.generate_graphs()
     graphLangGen.renderGraphAlphabet(graphLang, BASE_DIR / "data", fileName)
     
-    input = "bcab"
+    input = "bcabbcabbbb"
     graphLangGen.renderGraphString(graphLang, input, BASE_DIR / "data" / f"{fileName}_{input}")
     
     
