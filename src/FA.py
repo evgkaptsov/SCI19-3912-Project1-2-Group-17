@@ -50,6 +50,8 @@ class DFA:
             else:
                 names[q] = f"state{i}"   # fallback if many states
 
+        print("Saving to dot-file:", filename)
+        
         with open(filename, "w", encoding="utf-8") as f:
             f.write("digraph DFA {\n")
             f.write("    rankdir=LR;\n")
@@ -75,12 +77,12 @@ class DFA:
 
             f.write("}\n")
 
-    def render_dot_to_png(self, dot_file, output_file="output", view=False):
-        src = Source.from_file(dot_file)
+    def render_dot_to_png(self, dot_file_path, output_file="output", view=False):
+        print("Loading description from dot-file:", dot_file_path)
+        src = Source.from_file(dot_file_path)
         src.render(output_file, format="png", view=view)
 
-# for now we will use a code
-# stub (draft) for a finite automata
+
 
 
 class NFA(DFA):
@@ -133,31 +135,3 @@ class NFA(DFA):
         with open(filename, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)
 
-    # def save_to_dot(self, filename):
-    #     with open(filename, "w", encoding="utf-8") as f:
-    #         f.write("digraph NFA {\n")
-    #         f.write("    rankdir=LR;\n")
-
-    #         # accepting states
-    #         f.write("    node [shape = doublecircle]; ")
-    #         for q in self.F:
-    #             f.write(f"{q} ")
-    #         f.write(";\n")
-
-    #         # normal states
-    #         f.write("    node [shape = circle];\n")
-
-    #         # start arrow
-    #         f.write(f"    start [shape=point];\n")
-    #         f.write(f"    start -> {self.q0};\n")
-
-    #         # transitions
-    #         symbols = self.Sigma + ["eps"]
-    #         for q in self.Q:
-    #             for s in symbols:
-    #                 targets = self.delta.get((q, s), set())
-    #                 for t in targets:
-    #                     label = "ε" if s == "eps" else s
-    #                     f.write(f'    {q} -> {t} [label="{label}"];\n')
-
-    #         f.write("}\n")

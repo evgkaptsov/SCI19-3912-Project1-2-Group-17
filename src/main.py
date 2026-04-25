@@ -16,7 +16,7 @@ def main():
     
     fileName = "jsonNFA5"
     # your code here
-    BASE_DIR = Path(__file__).resolve().parent
+    BASE_DIR = Path(__file__).resolve().parent.parent
     file_path = BASE_DIR / "data" / f"{fileName}.json"
     
     nfa = FAFactory.from_file(file_path)
@@ -25,22 +25,24 @@ def main():
     
     cvt = NFA2DFAConverter()
     dfa = cvt.convertNFA2DFA(nfa)
-    print("Result: ", dfa)
+    print("Result:", dfa)
     
     dot_file_path = BASE_DIR / "data" / f"{fileName}.dot"
     dfa.save_to_dot(dot_file_path)
     
     png_file_path = BASE_DIR / "data" / f"{fileName}"
-    graplang_png_file_path = BASE_DIR / "data" / f"{fileName}_graplang"
-    
     
     dfa.render_dot_to_png(dot_file_path, png_file_path, view=False)
     
     
-    graphLangGen = GraphLanguageGenerator()
-    graphLang = graphLangGen.generate_graphs(nfa)
-    graphLangGen.render_graph(graphLang, "c", graplang_png_file_path)
-    print(f"Graph language description: {graphLang}")
+    graphLangGen = GraphLanguageGenerator(nfa)
+    graphLang = graphLangGen.generate_graphs()
+    graphLangGen.renderGraphAlphabet(graphLang, BASE_DIR / "data", fileName)
+    
+    input = "bcab"
+    graphLangGen.renderGraphString(graphLang, input, BASE_DIR / "data" / f"{fileName}_{input}")
+    
+    
     
     print("Done.")
 
