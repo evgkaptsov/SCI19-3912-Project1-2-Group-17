@@ -29,13 +29,13 @@ class GraphLanguageGenerator:
             graplang_png_file_path = path / (f"{baseFileName}_graplang_" + s)
             self.render_graph(graphLang, s, graplang_png_file_path)
 
-
     def renderGraphString(self, graphLang, s, fileName, view=True):
         # --- validate ---
         for c in s:
             if c not in self.nfa.Sigma:
                 raise ValueError(f"Symbol '{c}' not in alphabet {self.nfa.Sigma}")
     
+        # --- sequence ---
         sequence = [(GraphLanguageGenerator.START_SYMBOL, graphLang[GraphLanguageGenerator.START_SYMBOL])]
         sequence += [(c, graphLang[c]) for c in s]
         sequence.append((GraphLanguageGenerator.FINAL_SYMBOL, graphLang[GraphLanguageGenerator.FINAL_SYMBOL]))
@@ -45,6 +45,7 @@ class GraphLanguageGenerator:
         states = list(self.nfa.Q)
         n = len(states)
     
+        # --- geometry ---
         dx = 1.25
         h = 1.0
         label_y = 0.5
@@ -58,6 +59,7 @@ class GraphLanguageGenerator:
         leftmost_nodes = set()
         rightmost_nodes = set()
     
+        # --- build graph ---
         for block_idx, (sym, g) in enumerate(sequence):
             node_map_curr = {}
     
@@ -109,6 +111,7 @@ class GraphLanguageGenerator:
                     attrs
                 ))
     
+            # glue
             node_map_prev = {
                 str(i): node_map_curr[f"R{i}"]
                 for i in range(1, n+1)
@@ -116,35 +119,41 @@ class GraphLanguageGenerator:
     
             x_offset += dx
     
-        # -------- PATH SEARCH --------
+        # -------- ALL PATHS DETECTION --------
         adj = defaultdict(list)
+        rev_adj = defaultdict(list)
+    
         for src, dst, _ in merged["edges"]:
             adj[src].append(dst)
+            rev_adj[dst].append(src)
     
-        parent = {}
-        found_target = None
-    
+        # reachable from leftmost
+        reachable = set(leftmost_nodes)
         queue = deque(leftmost_nodes)
-        visited = set(leftmost_nodes)
     
         while queue:
             u = queue.popleft()
-            if u in rightmost_nodes:
-                found_target = u
-                break
             for v in adj[u]:
-                if v not in visited:
-                    visited.add(v)
-                    parent[v] = u
+                if v not in reachable:
+                    reachable.add(v)
                     queue.append(v)
     
+        # can reach rightmost
+        can_reach = set(rightmost_nodes)
+        queue = deque(rightmost_nodes)
+    
+        while queue:
+            u = queue.popleft()
+            for v in rev_adj[u]:
+                if v not in can_reach:
+                    can_reach.add(v)
+                    queue.append(v)
+    
+        # edges on valid paths
         path_edges = set()
-        if found_target is not None:
-            v = found_target
-            while v in parent:
-                u = parent[v]
-                path_edges.add((u, v))
-                v = u
+        for src, dst, _ in merged["edges"]:
+            if src in reachable and dst in can_reach:
+                path_edges.add((src, dst))
     
         # -------- DOT --------
         lines = []
@@ -172,7 +181,6 @@ class GraphLanguageGenerator:
         lines.append("}")
     
         Source("\n".join(lines)).render(fileName, format="png", view=view)
-    
     
 
     def generate_graphs(self):
