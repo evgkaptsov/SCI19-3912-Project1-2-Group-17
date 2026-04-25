@@ -6,6 +6,7 @@ Created on Wed Apr 22 17:14:24 2026
 """
 
 from graphviz import Digraph, Source
+from collections import defaultdict, deque
 
 
 class GraphLanguageGenerator:
@@ -29,13 +30,12 @@ class GraphLanguageGenerator:
             self.render_graph(graphLang, s, graplang_png_file_path)
 
 
-    def renderGraphString(self, graphLang, s, fileName):
+    def renderGraphString(self, graphLang, s, fileName, view=True):
         # --- validate ---
         for c in s:
             if c not in self.nfa.Sigma:
                 raise ValueError(f"Symbol '{c}' not in alphabet {self.nfa.Sigma}")
     
-        # --- sequence ---
         sequence = [(GraphLanguageGenerator.START_SYMBOL, graphLang[GraphLanguageGenerator.START_SYMBOL])]
         sequence += [(c, graphLang[c]) for c in s]
         sequence.append((GraphLanguageGenerator.FINAL_SYMBOL, graphLang[GraphLanguageGenerator.FINAL_SYMBOL]))
@@ -45,53 +45,52 @@ class GraphLanguageGenerator:
         states = list(self.nfa.Q)
         n = len(states)
     
-        # --- global geometry ---
         dx = 1.25
         h = 1.0
         label_y = 0.5
     
-        # fixed y for each index
         y_pos = {str(i+1): -i * h for i in range(n)}
     
         node_map_prev = {}
         counter = 0
         x_offset = 0.0
     
-        for sym, g in sequence:
+        leftmost_nodes = set()
+        rightmost_nodes = set()
+    
+        for block_idx, (sym, g) in enumerate(sequence):
             node_map_curr = {}
     
-            # --- label ---
+            # label
             label_node = f"label_{counter}"
             counter += 1
-    
             merged["nodes"][label_node] = {
                 "label": sym,
                 "pos": f"{x_offset + dx/2},{label_y}!",
                 "shape": "none"
             }
     
-            # --- create nodes (ignore original positions!) ---
             for i in range(1, n+1):
                 key = str(i)
     
-                # LEFT node
+                # LEFT
                 if key in node_map_prev:
                     node_map_curr[f"l{i}"] = node_map_prev[key]
                 else:
                     nid = f"n{counter}"
                     counter += 1
-    
                     node_map_curr[f"l{i}"] = nid
                     merged["nodes"][nid] = {
                         "label": key,
                         "pos": f"{x_offset},{y_pos[key]}!",
                         "shape": "circle"
                     }
+                    if block_idx == 0:
+                        leftmost_nodes.add(nid)
     
-                # RIGHT node
+                # RIGHT
                 nid = f"n{counter}"
                 counter += 1
-    
                 node_map_curr[f"R{i}"] = nid
                 merged["nodes"][nid] = {
                     "label": key,
@@ -99,7 +98,10 @@ class GraphLanguageGenerator:
                     "shape": "circle"
                 }
     
-            # --- edges (structure only) ---
+                if block_idx == len(sequence) - 1:
+                    rightmost_nodes.add(nid)
+    
+            # edges
             for src, dst, attrs in g["edges"]:
                 merged["edges"].append((
                     node_map_curr[src],
@@ -107,7 +109,6 @@ class GraphLanguageGenerator:
                     attrs
                 ))
     
-            # --- glue ---
             node_map_prev = {
                 str(i): node_map_curr[f"R{i}"]
                 for i in range(1, n+1)
@@ -115,7 +116,37 @@ class GraphLanguageGenerator:
     
             x_offset += dx
     
-        # --- DOT ---
+        # -------- PATH SEARCH --------
+        adj = defaultdict(list)
+        for src, dst, _ in merged["edges"]:
+            adj[src].append(dst)
+    
+        parent = {}
+        found_target = None
+    
+        queue = deque(leftmost_nodes)
+        visited = set(leftmost_nodes)
+    
+        while queue:
+            u = queue.popleft()
+            if u in rightmost_nodes:
+                found_target = u
+                break
+            for v in adj[u]:
+                if v not in visited:
+                    visited.add(v)
+                    parent[v] = u
+                    queue.append(v)
+    
+        path_edges = set()
+        if found_target is not None:
+            v = found_target
+            while v in parent:
+                u = parent[v]
+                path_edges.add((u, v))
+                v = u
+    
+        # -------- DOT --------
         lines = []
         lines.append("digraph G {")
         lines.append("    graph [layout=neato];")
@@ -128,11 +159,19 @@ class GraphLanguageGenerator:
     
         for src, dst, attrs in merged["edges"]:
             label = attrs.get("label", "")
-            lines.append(f'    {src} -> {dst} [label="{label}"];')
+    
+            if (src, dst) in path_edges:
+                lines.append(
+                    f'    {src} -> {dst} [label="{label}", penwidth=3, style=solid];'
+                )
+            else:
+                lines.append(
+                    f'    {src} -> {dst} [label="{label}", style=dashed];'
+                )
     
         lines.append("}")
     
-        Source("\n".join(lines)).render(fileName, format="png", view=True)
+        Source("\n".join(lines)).render(fileName, format="png", view=view)
     
     
 
