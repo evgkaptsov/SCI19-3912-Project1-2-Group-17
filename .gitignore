@@ -2,3 +2,5 @@
 *.pyc
 *.png
 *.ini
+*.pyc
+__pycache__
