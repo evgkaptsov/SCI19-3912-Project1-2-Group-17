@@ -1,6 +1,7 @@
+.spyproject
+__pycache__
 *.bak
 *.pyc
 *.png
 *.ini
 *.pyc
-__pycache__
