@@ -1,9 +1,0 @@
-digraph DFA {
-    rankdir=LR;
-    node [shape = doublecircle]; stateA stateB ;
-    node [shape = circle];
-    start [shape=point];
-    start -> stateA;
-    stateA -> stateB [label="a"];
-    stateB -> stateB [label="a"];
-}

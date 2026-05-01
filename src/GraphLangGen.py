@@ -5,6 +5,9 @@ Created on Wed Apr 22 17:14:24 2026
 @author: CCS
 """
 
+from pathlib import Path
+
+
 from graphviz import Digraph, Source
 from collections import defaultdict, deque
 
@@ -26,7 +29,7 @@ class NFAGraphLanguageGenerator:
 
     def renderGraphAlphabet(self, graphLang, path, baseFileName):
         for s in self.getExtendedAlphabet():
-            graplang_png_file_path = path / (f"{baseFileName}_graplang_" + s)
+            graplang_png_file_path = Path(path) / (f"{baseFileName}_graphlang_" + s)
             self.render_graph(graphLang, s, graplang_png_file_path)
 
     def renderGraphString(self, graphLang, s, fileName, view=True):
@@ -304,7 +307,7 @@ class TwoNFAGraphLanguageGenerator:
     
     def renderGraphAlphabet(self, graphLang, path, baseFileName):
         for s in self.getExtendedAlphabet():
-            file_path = path / f"{baseFileName}_graplang_{s}"
+            file_path = Path(path) / f"{baseFileName}_graphlang_{s}"
             self.render_graph(graphLang, s, file_path)
             
     def render_graph(self, G, symbol, filename):
