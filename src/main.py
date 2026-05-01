@@ -2,7 +2,11 @@
 """
 Created on Wed Mar 18 17:55:39 2026
 
-@author: Group 17
+@author: 
+    Group 17, 3/2568, Project 1/2
+    Natthira Sannok,  Suwannee Pitram, Warisara Promwicharn;
+    Project Advisor: Dr. Evgenii Kaptsov,
+    Suranaree University of Technology
 """
 
 

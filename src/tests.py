@@ -2,7 +2,11 @@
 """
 Created on Fri May  1 16:29:39 2026
 
-@author: CCS
+@author: 
+    Group 17, 3/2568, Project 1/2
+    Natthira Sannok,  Suwannee Pitram, Warisara Promwicharn;
+    Project Advisor: Dr. Evgenii Kaptsov,
+    Suranaree University of Technology
 """
 
 from NFA_to_DFA_coverter import NFA2DFAConverter
