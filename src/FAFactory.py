@@ -43,6 +43,9 @@ class FAFactory:
     
     @staticmethod
     def from_file_2way(filename):
+        
+        print(f"Loading {filename}...")
+        
         with open(filename, "r", encoding="utf-8") as f:
             data = json.load(f)
 
