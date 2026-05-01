@@ -178,7 +178,9 @@ class MainWindow(ctk.CTk):
             graphLangGen = TwoNFAGraphLanguageGenerator(nfa2)
             self.generate_graph_alphabet(filename, graphLangGen)
 
+    # This function is called when we click the button "Graph for 1NFA string"
     def btn_gen_graph_1NFA_str(self):
+
         filename = self.getJSONFileName()
         if filename:
             
@@ -199,9 +201,9 @@ class MainWindow(ctk.CTk):
                     remove_json_ext(filename) + f"_{userInput}"
                 )
       
-
+    # This function is called when we click the button "Graph for 2NFA string"
     def btn_gen_graph_2NFA_str(self):
-        # TODO:
+        # TODO: (homework for the students)
         # implement similar to btn_gen_graph_1NFA_str
         # use from_file_two_way instead of from_file
         # use TwoWayNFAGraphLanguageGenerator instead of NFAGraphLanguageGenerator
