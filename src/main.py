@@ -12,6 +12,9 @@ from GraphLangGen import NFAGraphLanguageGenerator
 from GraphLangGen import TwoNFAGraphLanguageGenerator
 
 
+import customtkinter
+
+
 
 def NFA_test():
     fileName = "jsonNFA5"
@@ -71,7 +74,33 @@ def TwoNFA_test():
 
 def main():
     
-    TwoNFA_test()
+    # TwoNFA_test()
+    
+    
+    customtkinter.set_appearance_mode("System")  # Modes: system (default), light, dark
+    customtkinter.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
+
+
+    app = customtkinter.CTk()  # create CTk window like you do with the Tk window
+    app.geometry("800x600")
+    app.title("DNG Converter")
+    
+    def btn_convert_NFA_2_DFA():
+        print("Converting NFA to DFA...")
+        
+    def btn_gen_alphabet_1NFA():
+        print("Generating alphabet for 1NFA...")
+    
+    
+    # Use instead of tkinter Button
+    button01 = customtkinter.CTkButton(master=app, text="NFA to DFA", command=btn_convert_NFA_2_DFA)
+    button01.place(relx=0.5, rely=0.25, anchor=customtkinter.CENTER)
+    
+    button02 = customtkinter.CTkButton(master=app, text="Alphabet for 1NFA", command=btn_gen_alphabet_1NFA)
+    button02.place(relx=0.5, rely=0.35, anchor=customtkinter.CENTER)
+    
+    app.mainloop()    
+    
     
     print("Done.")
 
