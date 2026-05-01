@@ -1,7 +1,6 @@
 **Student Project "Project I/II", Group 17, Semesters 2568/2-3.**
 
-Natthira Sannok, Suwannee Pitram, Waritsara Phromwichan
-
+Natthira Sannok, Suwannee Pitram, Waritsara Phromwichan.
 Project Advisor: Dr. Evgenii Kaptsov
 
 **Copyright and usage notice:**
