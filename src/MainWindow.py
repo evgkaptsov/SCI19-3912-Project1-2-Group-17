@@ -80,9 +80,11 @@ class MainWindow(ctk.CTk):
     
         # setuo styles
         # Modes: system (default), light, dark
-        ctk.set_appearance_mode("System")
+        # ctk.set_appearance_mode("System")
+        ctk.set_appearance_mode("dark")
         # Themes: blue (default), dark-blue, green
         ctk.set_default_color_theme("blue")
+        
 
         self.title("DNG Converter")
         self.geometry("400x300")
@@ -120,6 +122,7 @@ class MainWindow(ctk.CTk):
                                               command=safe_call(self.btn_about))
         buttonAbout.place(relx=0.5, rely=btn_base_y +
                           5 * btn_step, anchor=ctk.CENTER)
+        
 
     def getJSONFileName(self):
         return filedialog.askopenfilename(
