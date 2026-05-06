@@ -14,6 +14,7 @@ import sys
 
 import customtkinter as ctk
 from tkinter import filedialog
+from tkinter import messagebox
 import traceback
 
 from gui.AboutDialog import AboutDialog
@@ -142,6 +143,8 @@ class MainWindow(ctk.CTk):
             remove_json_ext(os.path.basename(filename))
         )
         print("Generation finished.")
+        #messagebox.showinfo("Info", "Generation finished.")
+
 
     def btn_convert_NFA_to_DFA(self):
         filename = self.getJSONFileName()
@@ -159,6 +162,8 @@ class MainWindow(ctk.CTk):
             dfa.save_to_dot(dot_file_path)
             dfa.render_dot_to_png(
                 dot_file_path, f"{filename_no_ext}", view=True)
+            
+            #messagebox.showinfo("Info", "Convertation finished.")
 
     def btn_gen_alphabet_1NFA(self):
         filename = self.getJSONFileName()
@@ -200,6 +205,8 @@ class MainWindow(ctk.CTk):
                     userInput, 
                     remove_json_ext(filename) + f"_{userInput}"
                 )
+                
+                #messagebox.showinfo("Info", "Generation finished.")
       
     # This function is called when we click the button "Graph for 2NFA string"
     def btn_gen_graph_2NFA_str(self):
