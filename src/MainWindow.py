@@ -203,6 +203,26 @@ class MainWindow(ctk.CTk):
       
     # This function is called when we click the button "Graph for 2NFA string"
     def btn_gen_graph_2NFA_str(self):
+
+        filename = self.getJSONFileName()
+        if filename:
+
+            nfa2 = FAFactory.from_file_2way(filename)
+
+            inputDlg = ABCInputDialog(self, nfa2.Sigma)
+            userInput = inputDlg.result
+            
+            if userInput:
+                
+                print("Generating graph for 2NFA for '{userInput}'...")
+                
+                graphLangGen = TwoNFAGraphLanguageGenerator(nfa2)
+                graphLang = graphLangGen.generate_graphs()
+                graphLangGen.renderGraphString(
+                    graphLang, 
+                    userInput, 
+                    remove_json_ext(filename) + f"_{userInput}"
+                )
         # TODO: (homework for the students)
         # implement similar to btn_gen_graph_1NFA_str
         # use from_file_two_way instead of from_file
