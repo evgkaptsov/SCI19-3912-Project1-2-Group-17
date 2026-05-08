@@ -57,5 +57,9 @@ class NFA2DFAConverter:
         Sigma = nfa.Sigma
         F = self.find_accept_states(Q, nfa.F)
 
-        return DFA(Q, q0, Sigma, F, delta)
+        resultDFA = DFA(Q, q0, Sigma, F, delta)
+        
+        print(f"Number of resulting DFA states: {len(Q)}")
+        
+        return resultDFA
     

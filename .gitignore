@@ -1,5 +1,14 @@
 .spyproject
 __pycache__
+
+# Ignore all files (everything)
+*
+# But don't ignore directories (anything ending with a /)
+!*/
+# And don't ignore files that have an extension (contain a dot)
+!*.*
+
+
 *.bak
 *.pyc
 *.png

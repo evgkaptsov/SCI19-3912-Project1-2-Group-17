@@ -145,6 +145,9 @@ class NFA(DFA):
 
 
 class TwoWayNFA(NFA):
+    
+    LEFT_END = "LEnd"
+    RIGHT_END = "REnd"
 
     def __init__(self, Q, q0, Sigma, F, delta):
         """
@@ -154,8 +157,8 @@ class TwoWayNFA(NFA):
         self.type = "TwoNFA"
 
         # extend alphabet with markers
-        self.left_marker = "⊢"
-        self.right_marker = "⊣"
+        self.left_marker = TwoWayNFA.LEFT_END
+        self.right_marker = TwoWayNFA.RIGHT_END
         self.Sigma_ext = [self.left_marker] + Sigma + [self.right_marker]
 
     # WARNING: this method wansn't tested properly!
@@ -218,8 +221,8 @@ class TwoWayNFA(NFA):
     def save_to_dot(self, filename):
         # marker replacement (Graphviz-safe)
         symbol_map = {
-            "⊢": "|-",
-            "⊣": "-|"
+            TwoWayNFA.LEFT_END: "|-",
+            TwoWayNFA.RIGHT_END: "-|"
         }
     
         # assign readable names

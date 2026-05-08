@@ -14,6 +14,7 @@ from pathlib import Path
 
 from graphviz import Digraph, Source
 from collections import defaultdict, deque
+from FA import TwoWayNFA
 
 
 class NFAGraphLanguageGenerator:
@@ -296,17 +297,17 @@ class NFAGraphLanguageGenerator:
 
 class TwoNFAGraphLanguageGenerator:
 
-    LEFT_END = "LEnd"
-    RIGHT_END = "REnd"
-
     def __init__(self, nfa):
+        self.LEFT_END = TwoWayNFA.LEFT_END
+        self.RIGHT_END = TwoWayNFA.RIGHT_END
         self.nfa = nfa
+
 
     def getExtendedAlphabet(self):
         return [
-            TwoNFAGraphLanguageGenerator.LEFT_END,
+            self.LEFT_END,
             *self.nfa.Sigma,
-            TwoNFAGraphLanguageGenerator.RIGHT_END
+            self.RIGHT_END
         ]
     
     def renderGraphAlphabet(self, graphLang, path, baseFileName):
@@ -405,7 +406,7 @@ class TwoNFAGraphLanguageGenerator:
                     if d == "R":
                         # l_i -> R_j and L_i -> R_j
                         graph["edges"].append((f"l{i}", f"R{j}", {"label": ""}))
-                        graph["edges"].append((f"L{i}", f"R{j}", {"label": ""}))
+                        graph["edges"].append((f"r{i}", f"R{j}", {"label": ""}))
 
                     elif d == "L":
                         # l_i -> L_j and r_i -> L_j

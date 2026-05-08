@@ -143,7 +143,7 @@ class MainWindow(ctk.CTk):
             remove_json_ext(os.path.basename(filename))
         )
         print("Generation finished.")
-        #messagebox.showinfo("Info", "Generation finished.")
+        messagebox.showinfo("Info", "Generation finished.")
 
 
     def btn_convert_NFA_to_DFA(self):
@@ -163,7 +163,10 @@ class MainWindow(ctk.CTk):
             dfa.render_dot_to_png(
                 dot_file_path, f"{filename_no_ext}", view=True)
             
-            #messagebox.showinfo("Info", "Convertation finished.")
+            numStatesNFA = len(nfa.Q)
+            numStatesDFA = len(dfa.Q)
+            messagebox.showinfo("Info", f"Convertation finished.\nNumber of NFA states: {numStatesNFA}\nNumber of DFA states: {numStatesDFA}")
+
 
     def btn_gen_alphabet_1NFA(self):
         filename = self.getJSONFileName()
@@ -206,7 +209,7 @@ class MainWindow(ctk.CTk):
                     remove_json_ext(filename) + f"_{userInput}"
                 )
                 
-                #messagebox.showinfo("Info", "Generation finished.")
+                messagebox.showinfo("Info", "Generation finished.")
       
     # This function is called when we click the button "Graph for 2NFA string"
     def btn_gen_graph_2NFA_str(self):
@@ -230,11 +233,7 @@ class MainWindow(ctk.CTk):
                     userInput, 
                     remove_json_ext(filename) + f"_{userInput}"
                 )
-        # TODO: (homework for the students)
-        # implement similar to btn_gen_graph_1NFA_str
-        # use from_file_two_way instead of from_file
-        # use TwoWayNFAGraphLanguageGenerator instead of NFAGraphLanguageGenerator
-        pass
+
     
       
         

@@ -38,7 +38,7 @@ class FAFactory:
                 cell = raw_delta[idx]
                 idx += 1
 
-                # แก้กรณี "1," -> "1"
+                # resolve rte case "1," -> "1"
                 states = set(x.strip(",") for x in cell if x)
 
                 delta[(q, s)] = states
@@ -59,20 +59,20 @@ class FAFactory:
         F = data["F"]
         raw_delta = data["delta"]
 
-        left_marker = "⊢"
-        right_marker = "⊣"
+        left_marker = TwoWayNFA.LEFT_END
+        right_marker = TwoWayNFA.RIGHT_END
 
         symbols = [left_marker] + Sigma + [right_marker]
 
         delta = {}
-
+        
         idx = 0
         for q in Q:
             for s in symbols:
                 cell = raw_delta[idx]
                 idx += 1
 
-                # convert [["1","R"], ["2","L"]] → {("1","R"), ("2","L")}
+                # convert [["1","R"], ["2","L"]] --> {("1","R"), ("2","L")}
                 transitions = set()
                 for pair in cell:
                     if len(pair) != 2:
